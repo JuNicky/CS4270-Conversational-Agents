@@ -12,7 +12,11 @@ def listen(furhat: FurhatRemoteAPI):
         return result
     else:
         raise TypeError("Expected a Status object")
-    
+
+
+def say(furhat: FurhatRemoteAPI, text: str, blocking: bool=True):
+    furhat.say(text=text, blocking=blocking)
+
 
 def ask_to_repeat(furhat: FurhatRemoteAPI):
     phrases = [
@@ -24,5 +28,4 @@ def ask_to_repeat(furhat: FurhatRemoteAPI):
     ]
 
     selected_phrase = random.choice(phrases)
-    furhat.say(text=selected_phrase)
-
+    say(furhat, selected_phrase)
