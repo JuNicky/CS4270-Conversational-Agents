@@ -37,11 +37,20 @@ def run(furhat: FurhatRemoteAPI):
 
         user_response = common.listen(furhat)
     
-    recommended_cocktail = cosine_similarity.recommend_cocktail(user_response.message)
+    recommended_cocktail, ingredients, instructions = cosine_similarity.recommend_cocktail(user_response.message)
     
 
     common.say(furhat, "I recommend a " + recommended_cocktail + " cocktail. Would you like to make it?")
  
+    # Wait for the user's response
+    user_response = common.listen(furhat)
+    while not user_response.success:
+        common.ask_to_repeat(furhat)
 
+        user_response = common.listen(furhat)
 
-
+    # Sentiment analysis on response user later on
+    if user_response.message == "yes":
+        common.say(furhat, "Great! Here are the ingredients and instructions.")
+        common.say(furhat, ingredients)
+        common.say(furhat, instructions)

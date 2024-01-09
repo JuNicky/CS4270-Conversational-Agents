@@ -36,7 +36,11 @@ def recommend_cocktail(input_string):
 
     # Return the recommended cocktail
     recommended_cocktail = filtered_data.loc[most_similar_index, 'drink']
-    return recommended_cocktail
+    # assign ingredients_and_quantities to a variable
+    ingredients_and_quantities = filtered_data.loc[most_similar_index, 'ingredients_and_quantities']
+    # assign instructions to a variable
+    instructions = filtered_data.loc[most_similar_index, 'instructions']
+    return recommended_cocktail, ingredients_and_quantities, instructions
 
 
 # Example usage
