@@ -6,9 +6,9 @@ from swagger_client.models.status import Status
 def listen(furhat: FurhatRemoteAPI):
     result = furhat.listen()
     if isinstance(result, Status):
-        if result.message == '':
-            result.success = False
-        print(result)
+        # if result.message == '':
+        #     result.success = False
+        # print(result)
         return result
     else:
         raise TypeError("Expected a Status object")
