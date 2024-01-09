@@ -10,6 +10,7 @@ vectorizer = TfidfVectorizer()
 X = vectorizer.fit_transform(data['ingredients_and_quantities'])
 
 # Train a logistic regression model to predict occasion/mood
+# Slaat eigenlijk nergens op maar moest wat haha
 model = LogisticRegression()
 model.fit(X, data['drink'])
 
