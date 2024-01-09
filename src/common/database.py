@@ -80,6 +80,6 @@ if __name__ == "__main__":
     }
     user_id_to_get = 2
 
-    # insert_user_data(user_data)
-    # get_user_by_id(user_id_to_get)
+    insert_user_data(user_data)
+    get_user_by_id(user_id_to_get)
 

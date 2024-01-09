@@ -1,4 +1,6 @@
 from furhat_remote_api import FurhatRemoteAPI
+from src.common import database
+
 
 # Recommends cocktails to the user based on their preferences
 def run(furhat: FurhatRemoteAPI):
