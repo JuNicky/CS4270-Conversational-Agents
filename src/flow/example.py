@@ -30,5 +30,9 @@ def run(furhat: FurhatRemoteAPI):
 
         user_response = common.listen(furhat)
 
+    # Get the user's name
+    user_name = user_response.message
+    common.say(furhat, "Nice to meet you, " + user_name + "!")
+
     common.say(furhat, "This was the end of the demo.")
  

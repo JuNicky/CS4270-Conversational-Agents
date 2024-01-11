@@ -12,6 +12,15 @@ def listen(furhat: FurhatRemoteAPI):
         return result
     else:
         raise TypeError("Expected a Status object")
+    
+def user_response(furhat: FurhatRemoteAPI):
+    user_response = listen(furhat)
+    while not user_response.success:
+        ask_to_repeat(furhat)
+
+        user_response = listen(furhat)
+
+    return user_response
 
 
 def say(furhat: FurhatRemoteAPI, text: str, blocking: bool=True):
