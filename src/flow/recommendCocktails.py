@@ -1,6 +1,6 @@
 import time
 from furhat_remote_api import FurhatRemoteAPI
-from src.common import common
+from src.common import common, database
 from src.experiments import cosine_similarity, sentiment_analysis
 # Recommends cocktails to the user based on their preferences
 def run(furhat: FurhatRemoteAPI):

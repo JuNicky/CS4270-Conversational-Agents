@@ -1,4 +1,6 @@
 from furhat_remote_api import FurhatRemoteAPI
+from src.common import database
+
 
 # Asks the user questions and builds a model of the user.
 def run(furhat: FurhatRemoteAPI):

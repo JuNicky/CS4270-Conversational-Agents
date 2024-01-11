@@ -1,0 +1,23 @@
+version: "2.4"
+services:
+  postgres:
+    image: postgres:latest
+    volumes:
+      - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+      - ./data:/docker-entrypoint-initdb.d/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=root
+
+  pgadmin-compose:
+    image: dpage/pgadmin4
+    environment: 
+        PGADMIN_DEFAULT_EMAIL: "test@gmail.com"
+        PGADMIN_DEFAULT_PASSWORD: "test123!"
+    ports: 
+        - "16543:80"
+    depends_on: 
+        - postgres    
