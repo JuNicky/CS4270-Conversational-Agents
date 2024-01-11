@@ -1,3 +1,4 @@
+import time
 from furhat_remote_api import FurhatRemoteAPI
 from src.common import common
 from src.experiments import cosine_similarity
