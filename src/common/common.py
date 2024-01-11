@@ -29,3 +29,16 @@ def ask_to_repeat(furhat: FurhatRemoteAPI):
 
     selected_phrase = random.choice(phrases)
     say(furhat, selected_phrase)
+
+
+def ask_to_repeat_name(furhat: FurhatRemoteAPI):
+    phrases = [
+        "Apologies, I missed your name. Could you say it again, please?",
+        "I'm sorry, your name slipped past me. Would you mind repeating it?",
+        "Pardon me, I didn't quite get your name. Can you repeat it, please?",
+        "Sorry, I didn't hear your name clearly. Could you tell me again?",
+        "Excuse me, I failed to catch your name. Would you please repeat it?"
+    ]
+
+    selected_phrase = random.choice(phrases)
+    say(furhat, selected_phrase)
