@@ -1,4 +1,6 @@
 from furhat_remote_api import FurhatRemoteAPI
+from src.common import database
+
 
 # Should check if there is memory corresponding to person
 # If not should ask for name
