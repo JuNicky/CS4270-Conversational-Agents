@@ -68,6 +68,55 @@ def get_user_by_id(user_id):
                 print(f"[Error] ~ Fetching user data: {e}")
 
 
+def get_user_by_name(name):
+    """Fetches user data by name from the database."""
+    with psycopg2.connect(**get_connection_params()) as connection:
+        with connection.cursor() as cursor:
+            try:
+                select_query = sql.SQL("""
+                    SELECT * FROM Users WHERE name = {name}
+                """).format(name=sql.Literal(name))
+                
+                cursor.execute(select_query, (name,))
+                user_data = cursor.fetchone()
+
+                if user_data:
+                    return user_data
+                else:
+                    return None
+            except Exception as e:
+                print(f"[Error] ~ Fetching user data: {e}")
+                
+
+def update_user_data(user_data):
+    """Updates user data in the database."""
+    with psycopg2.connect(**get_connection_params()) as connection:
+        with connection.cursor() as cursor:
+            try:
+                update_query = sql.SQL("""
+                    UPDATE Users
+                    SET age = {age},
+                        visit = {visit},
+                        last_drink = {last_drink},
+                        preferred_sweet = {preferred_sweet},
+                        preferred_sour = {preferred_sour}
+                    WHERE name = {name}
+                """).format(
+                    name=sql.Literal(user_data.get('name')),
+                    age=sql.Literal(user_data.get('age')),
+                    visit=sql.Literal(user_data.get('visit')),
+                    last_drink=sql.Literal(user_data.get('last_drink')),
+                    preferred_sweet=sql.Literal(user_data.get('preferred_sweet')),
+                    preferred_sour=sql.Literal(user_data.get('preferred_sour'))
+                )
+                
+                cursor.execute(update_query)
+                connection.commit()
+                print(f"User data updated: {user_data}")
+            except Exception as e:
+                print(f"[Error] ~ Updating user data: {e}")
+
+
 if __name__ == "__main__":
     # Example usage:
     user_data = {
