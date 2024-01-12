@@ -1,13 +1,21 @@
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+import requests
 
-tokenizer = AutoTokenizer.from_pretrained("h2oai/h2ogpt-oasst1-512-12b", padding_side="left")
-model = AutoModelForCausalLM.from_pretrained("h2oai/h2ogpt-oasst1-512-12b", torch_dtype=torch.bfloat16, device_map="auto")
+# Zephyr model
+API_URL = "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta"
+# Google model
+# API_URL = "https://api-inference.huggingface.co/models/google/flan-t5-xl"
 
-input_text = "Why is drinking water so healthy?"
-input_ids = tokenizer.encode(input_text, return_tensors="pt").to(model.device)
+# Vind een question answering model en een text generation model dat lekker samenwerkt
+headers = {"Authorization": "Bearer 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"}
 
-output = model.generate(input_ids, max_length=100)
-generated_text = tokenizer.decode(output[0], skip_special_tokens=True)
+def query(payload):
+	response = requests.post(API_URL, headers=headers, json=payload)
+	return response.json()
+	
 
-print(generated_text)
+output = query({
+	"inputs": "I'm planning a girls night out and I want to make a signature cocktail for the group. Can you recommend a cocktail that is easy to make and has a sweet taste?"
+})
+
+# print(list(output[0].values())[0])
+print(output)
