@@ -13,21 +13,7 @@ def run(furhat: FurhatRemoteAPI):
         # Ask what the user wants to change
         # Recommend next cocktail
     
-    users = furhat.get_users()
-    while not users:
-        users = furhat.get_users()
-        print("Looking for users. You can add a user in the Webinterface.")
-        print("Password == admin, Go to Settings --> Microphone.")
-        print("And then double click somewhere to spawn a user.")
-        print()
-        time.sleep(5)
-
-    # Attend the user closest to the robot
-    furhat.attend(user="CLOSEST")
-
-    # Greetings from furhat
-    common.say(furhat, "Hi there, I'm your cocktail assistant!")
-    common.say(furhat, "Nice to meet you! I haven't seen you before. What kind of cocktail would you like?")
+    common.say(furhat, "What kind of cocktail would you like?")
 
     # Wait for the user's response
     # For context, I made a custom function that calls their function.
