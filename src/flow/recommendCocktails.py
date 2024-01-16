@@ -34,10 +34,10 @@ def run(furhat: FurhatRemoteAPI):
     # The only thing that is changed, is that when the message is empty, succes should also be false.
     user_response = common.user_response(furhat)
     
-    recommended_cocktail, ingredients, instructions = cosine_similarity.recommend_cocktail(user_response.message)
+    recommended_cocktail, ingredients, instructions, occasion = cosine_similarity.recommend_cocktail(user_response.message)
     
 
-    common.say(furhat, "I recommend a " + recommended_cocktail + " cocktail. Would you like to make it?")
+    common.say(furhat, f"For the {occasion} I recommend a {recommended_cocktail} cocktail. Would you like to make it?")
  
     # Wait for the user's response
     user_response = common.user_response(furhat)
