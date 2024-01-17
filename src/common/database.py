@@ -3,7 +3,7 @@ import logging
 import psycopg2
 from dotenv import load_dotenv
 from psycopg2 import sql
-from user import User
+from src.common.user import User
 
 
 # Load environment variables from the .env file

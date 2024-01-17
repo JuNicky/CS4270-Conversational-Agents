@@ -48,7 +48,8 @@ def recommend_cocktail(input_string):
     <|user|>""" + str(input_string) + """ </s>
     <|assistant|>"""
     }, model='recommend')
-
+    
+    print(gen_drink)
     print(list(gen_drink[0].values())[0])
 
     qa_occasion = query({
