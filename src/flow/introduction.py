@@ -32,8 +32,7 @@ def extract_names(text: str, furhat):
         }, model='qa')
 
         if name.get('answer') and len(name['answer']) > 0:
-            print(name['answer'])
-            return name['answer']
+            return name['answer'].strip()
 
                 
         common.ask_to_repeat_name(furhat)
@@ -74,7 +73,7 @@ def run(furhat: FurhatRemoteAPI):
     response = common.listen(furhat)
     
     name = extract_names(response.message, furhat)
-
+    print(name)
     # Find user
     user_data = database.get_user_by_name(name)
     if user_data:

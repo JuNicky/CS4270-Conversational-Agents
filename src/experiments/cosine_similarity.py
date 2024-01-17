@@ -54,8 +54,8 @@ def recommend_cocktail(input_string):
     # Question answering model
     qa_recommend = query({
         "inputs": {
-            "question": "What is the coktail recommended?",
-            "context": list(bv [0].values())[0]
+            "question": "What is the cocktail recommended?",
+            "context": str(input_string)
         },
     }, model='qa')
     print(qa_recommend)

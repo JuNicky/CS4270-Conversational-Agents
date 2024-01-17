@@ -41,6 +41,9 @@ def run(furhat: FurhatRemoteAPI, user_id, user):
         common.say(furhat, "Oh what can we change about the cocktail?")
         user_response = common.user_response(furhat)
         
+        occasion = get_occasion(user_response.message)
+        common.say(furhat, f"Good to see the {occasion}! Let me look for the best cocktail for you.", blocking=False)
+                
         recommended_cocktail, ingredients, instructions = cosine_similarity.recommend_cocktail(user_response.message)
         
 

@@ -11,7 +11,7 @@ def run(furhat: FurhatRemoteAPI, user_data):
     # Else
         # Go to recommend cocktails
     
-    last_drink = user_data[4]
+    last_drink = user_data[5]
     common.say(furhat, f"I remember that I gave you {last_drink} last time. Would you like to a different drink?")
     
     # Wait for the user's response
