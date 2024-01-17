@@ -4,9 +4,10 @@ import time
 from furhat_remote_api import FurhatRemoteAPI
 from src.common import common, database
 from src.flow import buildModel, repeatSession
+from src.common.api_calls import query
+from src.common.user import User
 
-
-def extract_names(text: str):
+def extract_names(text: str, furhat):
     """
     Extracts named entities (names) from the given text.
     
@@ -14,14 +15,30 @@ def extract_names(text: str):
         text (str): The input text from which names are to be extracted.
         
     Returns:
-        list: A list of extracted names.
+        String: The name.
     """
-    names = []
-    for sent in nltk.sent_tokenize(text):
-        for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
-            if hasattr(chunk, 'label'):
-                names.append(''.join(c[0] for c in chunk))
-    return names
+    # names = []
+    # for sent in nltk.sent_tokenize(text):
+    #     for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
+    #         if hasattr(chunk, 'label'):
+    #             names.append(''.join(c[0] for c in chunk))
+    # return names
+    while 1:
+        name = query({
+            "inputs": {
+                "question": "What is my name?",
+                "context": str(text)
+            },
+        }, model='qa')
+
+        if name.get('answer') and len(name['answer']) > 0:
+            print(name['answer'])
+            return name['answer']
+
+                
+        common.ask_to_repeat_name(furhat)
+        response = common.listen(furhat)
+        text = response.message
 
 
 def extract_numbers(text: str):
@@ -56,28 +73,11 @@ def run(furhat: FurhatRemoteAPI):
     
     response = common.listen(furhat)
     
-    if len(response.message.split()) > 1 or response.success == False:
-        while 1:
-            # Extract the name from the response
-            names = extract_names(response.message)
-            if len(names) == 1:
-                name = names[0].title()
-                break
-            
-            common.ask_to_repeat_name(furhat)
-            response = common.listen(furhat)
-            
-            if len(response.message) == 1:
-                name = response.message.title()
-                break
-    else:
-        name = response.message.title()
-        
+    name = extract_names(response.message, furhat)
+
     # Find user
     user_data = database.get_user_by_name(name)
     if user_data:
-        user_data['visit'] += 1
-        database.update_user_data(user_data)
         # If the user found in the database has visited before, go to repeatSession
         repeatSession.run(furhat, user_data)
         return
@@ -98,18 +98,11 @@ def run(furhat: FurhatRemoteAPI):
         return
     
     # Create user
-    user_data = {
-        'name': name,
-        'age': age,
-        'visit': 1,
-        'last_drink': None,
-        'preferred_sweet': None,
-        'preferred_sour': None
-    }
-    database.insert_user_data(user_data)
+    new_user = User(None, name, age)
+    user_id = database.insert_user_data(new_user)
 
     # Go to buildModel
-    buildModel.run(furhat, user_data)
+    buildModel.run(furhat, user_id, new_user)
         
         
     

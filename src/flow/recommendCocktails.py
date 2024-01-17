@@ -3,8 +3,10 @@ from furhat_remote_api import FurhatRemoteAPI
 from src.common import common, database
 from src.common.api_calls import query
 from src.experiments import cosine_similarity, sentiment_analysis
+
+
 # Recommends cocktails to the user based on their preferences
-def run(furhat: FurhatRemoteAPI):
+def run(furhat: FurhatRemoteAPI, user_id, user):
     # Calculate cocktail using cosine similarity
     # Ask if the user wants the cocktail
     # Yes:
@@ -42,7 +44,11 @@ def run(furhat: FurhatRemoteAPI):
 
         user_response = common.user_response(furhat)
     
-    
+    # Update the user's model with the new cocktail
+    user.last_drink = recommended_cocktail
+    user.occasion = occasion
+    database.update_user_data(user_id, user)
+
     common.say(furhat, "Great! Here are the ingredients and instructions.")
     common.say(furhat, ingredients)
     common.say(furhat, instructions)

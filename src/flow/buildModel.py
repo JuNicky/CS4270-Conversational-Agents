@@ -4,9 +4,9 @@ from src.flow import recommendCocktails
 
 
 # Asks the user questions and builds a model of the user.
-def run(furhat: FurhatRemoteAPI, user_data):
+def run(furhat: FurhatRemoteAPI, user_id, user):
     print("We are currently running buildModel.py")
-    recommendCocktails.run(furhat)
+    recommendCocktails.run(furhat, user_id, user)
     # Ask questions and to build model
     # Suggestions on how to do it: make a GPT model
     # When the model is created, save to database

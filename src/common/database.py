@@ -3,7 +3,8 @@ import logging
 import psycopg2
 from dotenv import load_dotenv
 from psycopg2 import sql
-from user import User
+from src.common.user import User
+
 
 
 # Load environment variables from the .env file
@@ -93,13 +94,32 @@ def get_user_by_name(name):
                     return None
             except Exception as e:
                 print(f"[Error] ~ Fetching user data: {e}")
-                
 
-def update_user_data(user_data):
+def get_all_users():
+    """Fetches user data by name from the database."""
+    with psycopg2.connect(**get_connection_params()) as connection:
+        with connection.cursor() as cursor:
+            try:
+                select_query = sql.SQL("""
+                    SELECT * FROM Users
+                """)
+                
+                cursor.execute(select_query)
+                user_data = cursor.fetchall()
+                print(user_data)
+                if user_data:
+                    return User(*user_data)
+                else:
+                    return None
+            except Exception as e:
+                print(f"[Error] ~ Fetching user data: {e}")                
+
+def update_user_data(user_id, user_data):
     """Updates user data in the database."""
     with psycopg2.connect(**get_connection_params()) as connection:
         with connection.cursor() as cursor:
             try:
+                print(user_id)
                 update_query = sql.SQL("""
                     UPDATE Users
                     SET age = {age},
@@ -113,9 +133,8 @@ def update_user_data(user_data):
                         hot = {hot},
                         frozen = {frozen},
                         refreshing = {refreshing}
-                    WHERE name = {name}
+                    WHERE id = {user_id}
                 """).format(
-                    name=sql.Literal(user_data.name),
                     age=sql.Literal(user_data.age),
                     # visit=sql.Literal(user_data.visit),
                     last_drink=sql.Literal(user_data.last_drink),
@@ -128,7 +147,8 @@ def update_user_data(user_data):
                     savory=sql.Literal(user_data.savory),
                     hot=sql.Literal(user_data.hot),
                     frozen=sql.Literal(user_data.frozen),
-                    refreshing=sql.Literal(user_data.refreshing)
+                    refreshing=sql.Literal(user_data.refreshing),
+                    user_id=sql.Literal(user_id)
                 )
                 cursor.execute(update_query)
                 connection.commit()
@@ -175,13 +195,12 @@ if __name__ == "__main__":
     }
     user_instance = User(**user_data)
     # insert_user_data(user_instance)
-
-    print(get_user_by_name("John"))
-    user_instance.set_age(26)
-    user_instance.set_last_drink("CocktailABC")
-    user_instance.set_occasion("wedding")
-    user_instance.set_sweet(False)
-    user_instance.set_sour(True)
+    print(get_user_by_name("Nikki"))
+    # user_instance.set_age(26)
+    # user_instance.set_last_drink("CocktailABC")
+    # user_instance.set_occasion("wedding")
+    # user_instance.set_sweet(False)
+    # user_instance.set_sour(True)
 
     # update_user_data(user_instance)
     # get_all_cocktails()
