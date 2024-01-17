@@ -1,13 +1,22 @@
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+import requests
 
-tokenizer = AutoTokenizer.from_pretrained("h2oai/h2ogpt-oasst1-512-12b", padding_side="left")
-model = AutoModelForCausalLM.from_pretrained("h2oai/h2ogpt-oasst1-512-12b", torch_dtype=torch.bfloat16, device_map="auto")
+# Zephyr model
+API_URL = "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta"
+# Vind een question answering model en een text generation model dat lekker samenwerkt
+headers = {"Authorization": "Bearer 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"}
 
-input_text = "Why is drinking water so healthy?"
-input_ids = tokenizer.encode(input_text, return_tensors="pt").to(model.device)
+def query(payload):
+	response = requests.post(API_URL, headers=headers, json=payload)
+	return response.json()
 
-output = model.generate(input_ids, max_length=100)
-generated_text = tokenizer.decode(output[0], skip_special_tokens=True)
+input_string = "I am going to a party and I want something sweet"	
 
-print(generated_text)
+gen_drink = query({
+        "inputs": """<|system|>
+    You should let me know if the user mentions an occasion in the input</s>
+    <|user|>""" + str(input_string) + """ </s>
+    <|assistant|>"""
+    })
+
+print(gen_drink)
+print(list(gen_drink[0].values())[0])

@@ -2,6 +2,9 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.linear_model import LogisticRegression
+from src.common.api_calls import query
+
+# import gpt, qa
 # Load the dataset
 data = pd.read_csv('src/experiments/cocktail_data.csv', encoding='ISO-8859-1')
 
@@ -14,10 +17,71 @@ X = vectorizer.fit_transform(data['ingredients_and_quantities'])
 model = LogisticRegression()
 model.fit(X, data['drink'])
 
+def extract_ingredients(text):
+    """
+    Extracts and formats the ingredients from a given text.
+
+    Parameters:
+    text (str): The input text containing ingredients listed in a specific format.
+
+    Returns:
+    str: A string containing the extracted ingredients, separated by commas.
+    """
+    # Splitting the text into lines
+    lines = text.split('\n')
+
+    # Extracting the lines that contain ingredients
+    ingredients = [line.strip('- ').split('(')[0].strip() for line in lines if '- ' in line]
+
+    # Joining the ingredients with a comma
+    formatted_ingredients = ', '.join(ingredients)
+    return formatted_ingredients
+
+
 # Function to recommend a cocktail based on input string
 def recommend_cocktail(input_string):
+
+    # stukje gptflow
+    gen_drink = query({
+        "inputs": """<|system|>
+    You are a chatbot who recommends a cocktail based on user input and gives the ingredients</s>
+    <|user|>""" + str(input_string) + """ </s>
+    <|assistant|>"""
+    }, model='recommend')
+
+    print(list(gen_drink[0].values())[0])
+
+    qa_occasion = query({
+        "inputs": {
+            "question": "What is the occasion mentioned?",
+            # "context": list(gen_drink[0].values())[0]
+            "context": str(input_string)
+        },
+    }, model='qa')
+
+    qa_occasion = list(qa_occasion.values())[-1]
+
+    #Question answering model
+    # qa_recommend = qa.query({
+    #     "inputs": {
+    #         "question": "What is the coktail recommended?",
+    #         "context": list(gen_drink[0].values())[0]
+    #     },
+    # })
+
+    # gen_ingredient = gpt.query({
+    #     "inputs": """<|system|>
+    # You are a chatbot who tells the ingredients needed for a cocktail</s>
+    # <|user|>""" + list(qa_recommend.values())[-1] + """</s>
+    # <|assistant|>"""
+    # })
+
+
+    gen_ingredients = extract_ingredients(list(gen_drink[0].values())[0])
+
+
     # Preprocess the input string
-    input_vector = vectorizer.transform([input_string])
+    input_vector = vectorizer.transform([gen_ingredients])
 
     # Predict the drink of the input string
     predicted_drink = model.predict(input_vector)[0]
@@ -41,10 +105,12 @@ def recommend_cocktail(input_string):
     ingredients_and_quantities = filtered_data.loc[most_similar_index, 'ingredients_and_quantities']
     # assign instructions to a variable
     instructions = filtered_data.loc[most_similar_index, 'instructions']
-    return recommended_cocktail, ingredients_and_quantities, instructions
+
+    print("Recommended cocktail:", recommended_cocktail)
+    return recommended_cocktail, ingredients_and_quantities, instructions, qa_occasion
 
 
 # Example usage
-input_string = "fruity"
-recommended_cocktail = recommend_cocktail(input_string)
-print("Recommended cocktail:", recommended_cocktail)
+# input_string = "I would like a strong and sweet drink fo my girls party"
+# recommended_cocktail = recommend_cocktail(input_string)
+# print("Recommended cocktail:", recommended_cocktail)
