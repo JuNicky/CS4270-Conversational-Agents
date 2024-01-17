@@ -11,7 +11,7 @@ def run(furhat: FurhatRemoteAPI, user_data):
     # Else
         # Go to recommend cocktails
     
-    last_drink = user_data[5]
+    last_drink = user_data.last_drink
     common.say(furhat, f"I remember that I gave you {last_drink} last time. Would you like to a different drink?")
     
     # Wait for the user's response
@@ -20,7 +20,7 @@ def run(furhat: FurhatRemoteAPI, user_data):
     # Sentiment analysis on response
     if sentiment_analysis.query(user_response.message) == "POSITIVE":
         # Go to recommendCocktails
-        recommendCocktails.run(furhat)
+        recommendCocktails.run(furhat, user_data.user_id, user_data)
         return
     else:
         buildModel.run(furhat, user_data)
