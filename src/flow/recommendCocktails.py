@@ -1,7 +1,7 @@
 import time
 from furhat_remote_api import FurhatRemoteAPI
 from src.common import common, database
-from src.common.api_calls import query
+from src.common.api_calls import query, get_occasion
 from src.experiments import cosine_similarity, sentiment_analysis
 
 
@@ -23,13 +23,17 @@ def run(furhat: FurhatRemoteAPI, user_id, user):
     # The only thing that is changed, is that when the message is empty, succes should also be false.
     user_response = common.user_response(furhat)
     
-    recommended_cocktail, ingredients, instructions, occasion = cosine_similarity.recommend_cocktail(user_response.message)
+    occasion = get_occasion(user_response.message)
     
+    common.say(furhat, f"Fun to see your {occasion}! Let me look for the best cocktail for you.", blocking=False)
+    recommended_cocktail, ingredients, instructions,  = cosine_similarity.recommend_cocktail(user_response.message)
 
     common.say(furhat, f"For the {occasion} I recommend a {recommended_cocktail} cocktail. Would you like to make it?")
  
     # Wait for the user's response
     user_response = common.user_response(furhat)
+    
+    
 
     print(query(user_response.message, model='sentiment'))
     # Sentiment analysis on response user later on

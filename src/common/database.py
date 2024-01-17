@@ -6,7 +6,6 @@ from psycopg2 import sql
 from src.common.user import User
 
 
-
 # Load environment variables from the .env file
 if not load_dotenv():
     print("Failed to load environment variables from .env file.")

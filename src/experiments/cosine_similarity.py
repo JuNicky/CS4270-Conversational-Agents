@@ -37,7 +37,6 @@ def extract_ingredients(text):
     formatted_ingredients = ', '.join(ingredients)
     return formatted_ingredients
 
-
 # Function to recommend a cocktail based on input string
 def recommend_cocktail(input_string):
 
@@ -48,27 +47,18 @@ def recommend_cocktail(input_string):
     <|user|>""" + str(input_string) + """ </s>
     <|assistant|>"""
     }, model='recommend')
-
+    print(gen_drink)
+    print("=====================================")
     print(list(gen_drink[0].values())[0])
 
-    qa_occasion = query({
+    # Question answering model
+    qa_recommend = query({
         "inputs": {
-            "question": "What is the occasion mentioned?",
-            # "context": list(gen_drink[0].values())[0]
-            "context": str(input_string)
+            "question": "What is the coktail recommended?",
+            "context": list(bv [0].values())[0]
         },
     }, model='qa')
-
-    qa_occasion = list(qa_occasion.values())[-1]
-
-    #Question answering model
-    # qa_recommend = qa.query({
-    #     "inputs": {
-    #         "question": "What is the coktail recommended?",
-    #         "context": list(gen_drink[0].values())[0]
-    #     },
-    # })
-
+    print(qa_recommend)
     # gen_ingredient = gpt.query({
     #     "inputs": """<|system|>
     # You are a chatbot who tells the ingredients needed for a cocktail</s>
@@ -107,7 +97,7 @@ def recommend_cocktail(input_string):
     instructions = filtered_data.loc[most_similar_index, 'instructions']
 
     print("Recommended cocktail:", recommended_cocktail)
-    return recommended_cocktail, ingredients_and_quantities, instructions, qa_occasion
+    return recommended_cocktail, ingredients_and_quantities, instructions
 
 
 # Example usage
