@@ -8,8 +8,16 @@ CREATE TABLE Users
     age integer,
     visit integer,
     last_drink text,
-    preferred_sweet integer CHECK (preferred_sweet BETWEEN 1 AND 5),
-    preferred_sour integer CHECK (preferred_sour BETWEEN 1 AND 5)
+    occasion text,
+    sweet boolean,
+    sour boolean,
+    spicy boolean,
+    -- bitter boolean, 
+    fruity boolean,
+    savory boolean,
+    hot boolean,
+    frozen boolean,
+    refreshing boolean
 );
 
 CREATE TABLE cocktail_data (
@@ -22,5 +30,4 @@ CREATE TABLE cocktail_data (
     instructions text
 );
 
-COPY cocktail_data(id, alcoholic, drink, glass, ingredients, ingredients_and_quantities, instructions)
-FROM '/docker-entrypoint-initdb.d/data/cocktail_data_one.csv' DELIMITER ',' CSV HEADER;
+COPY cocktail_data FROM '/docker-entrypoint-initdb.d/data/cocktail_data_one.csv' CSV HEADER;
