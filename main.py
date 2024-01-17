@@ -4,7 +4,7 @@ from src.flow import introduction, example, recommendCocktails
 
 if __name__=='__main__':
     furhat = FurhatRemoteAPI("localhost")
-    introduction.run(furhat)
+    recommendCocktails.run(furhat)
     
     # Example flow
     # example.run(furhat)
