@@ -4,6 +4,7 @@ import psycopg2
 from dotenv import load_dotenv
 from psycopg2 import sql
 from src.common.user import User
+from src.common.cocktail import Cocktail
 
 
 # Load environment variables from the .env file
@@ -172,6 +173,23 @@ def get_all_cocktails():
                     print(results[i])
             except Exception as e:
                 print(f"[Error] ~ getting all cocktails: {e}")
+
+def get_drink_by_cocktail(cocktail):
+    """Fetches all ingredients from a cocktail from the database."""
+    with psycopg2.connect(**get_connection_params()) as connection:
+        with connection.cursor() as cursor:
+            try:
+                select_query = sql.SQL("""
+                    SELECT *
+                    FROM cocktail_data
+                    WHERE drink = {cocktail}
+                """).format(cocktail=sql.Literal(cocktail))
+                cursor.execute(select_query)
+                results = cursor.fetchone()
+                return Cocktail(*results)
+            except Exception as e:
+                print(f"[Error] ~ getting all ingredients: {e}")
+
 
 if __name__ == "__main__":
     # Example usage:
