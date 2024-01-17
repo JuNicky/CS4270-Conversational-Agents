@@ -9,15 +9,14 @@ def query(payload):
 	response = requests.post(API_URL, headers=headers, json=payload)
 	return response.json()
 
-# input_string = "I am going to a party and I want something sweet"	
+input_string = "I am going to a party and I want something sweet"	
 
-# gen_drink = query({
-#         "inputs": """<|system|>
-#     You are a chatbot who only recommends a cocktail based on user input without small talk and gives the ingredients. You only name cocktail and ingredients</s>
-#     <|user|>""" + str(input_string) + """ </s>
-#     <|assistant|>"""
-#     })
+gen_drink = query({
+        "inputs": """<|system|>
+    You should let me know if the user mentions an occasion in the input</s>
+    <|user|>""" + str(input_string) + """ </s>
+    <|assistant|>"""
+    })
 
-# print(gen_drink)
-# print(list(gen_drink[0].values())[0])
-# print(output)
+print(gen_drink)
+print(list(gen_drink[0].values())[0])

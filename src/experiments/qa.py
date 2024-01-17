@@ -7,11 +7,11 @@ def query(payload):
 	response = requests.post(API_URL, headers=headers, json=payload)
 	return response.json()
 	
-# output = query({
-# 	"inputs": {
-# 		"question": "What is the coktail recommended?",
-# 		"context": "My name is Clara and I live in Berkeley."
-# 	},
-# })
+output = query({
+	"inputs": {
+		"question": "Did the user mention an occasion?",
+		"context": "I want to eat a hamburger at my party"
+	},
+})
 
-# print(output)
+print(output)
