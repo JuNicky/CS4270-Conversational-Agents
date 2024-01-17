@@ -3,6 +3,7 @@ import logging
 import psycopg2
 from dotenv import load_dotenv
 from psycopg2 import sql
+from user import User
 
 
 # Load environment variables from the .env file
@@ -20,25 +21,31 @@ def get_connection_params():
         'port': os.getenv('DB_PORT')
     }
 
-
 def insert_user_data(user_data):
     """Inserts user data into the database."""
     with psycopg2.connect(**get_connection_params()) as connection:
         with connection.cursor() as cursor:
             try:
                 insert_query = sql.SQL("""
-                    INSERT INTO Users (name, age, visit, last_drink, preferred_sweet, preferred_sour)
-                    VALUES ({name}, {age}, {visit}, {last_drink}, {preferred_sweet}, {preferred_sour})
+                    INSERT INTO Users (name, age, last_drink, occasion, sweet, sour, spicy, fruity, savory, hot, frozen, refreshing)
+                    VALUES ({name}, {age}, {last_drink}, {occasion}, {sweet}, {sour}, {spicy}, {fruity}, {savory}, {hot}, {frozen}, {refreshing})
                     RETURNING id
                 """).format(
-                    name=sql.Literal(user_data.get('name')),
-                    age=sql.Literal(user_data.get('age')),
-                    visit=sql.Literal(user_data.get('visit')),
-                    last_drink=sql.Literal(user_data.get('last_drink')),
-                    preferred_sweet=sql.Literal(user_data.get('preferred_sweet')),
-                    preferred_sour=sql.Literal(user_data.get('preferred_sour'))
+                    name=sql.Literal(user_data.name),
+                    age=sql.Literal(user_data.age),
+                    # visit=sql.Literal(user_data.visit),
+                    last_drink=sql.Literal(user_data.last_drink),
+                    occasion=sql.Literal(user_data.occasion),
+                    sweet=sql.Literal(user_data.sweet),
+                    sour=sql.Literal(user_data.sour),
+                    spicy=sql.Literal(user_data.spicy),
+                    # bitter=sql.Literal(user_data.bitter),
+                    fruity=sql.Literal(user_data.fruity),
+                    savory=sql.Literal(user_data.savory),
+                    hot=sql.Literal(user_data.hot),
+                    frozen=sql.Literal(user_data.frozen),
+                    refreshing=sql.Literal(user_data.refreshing)
                 )
-                
                 cursor.execute(insert_query)
                 user_id = cursor.fetchone()[0]
                 connection.commit()
@@ -79,9 +86,9 @@ def get_user_by_name(name):
                 
                 cursor.execute(select_query, (name,))
                 user_data = cursor.fetchone()
-
+                print(user_data)
                 if user_data:
-                    return user_data
+                    return User(*user_data)
                 else:
                     return None
             except Exception as e:
@@ -96,20 +103,33 @@ def update_user_data(user_data):
                 update_query = sql.SQL("""
                     UPDATE Users
                     SET age = {age},
-                        visit = {visit},
                         last_drink = {last_drink},
-                        preferred_sweet = {preferred_sweet},
-                        preferred_sour = {preferred_sour}
+                        occasion = {occasion},
+                        sweet = {sweet},
+                        sour = {sour},
+                        spicy = {spicy},
+                        fruity = {fruity},
+                        savory = {savory},
+                        hot = {hot},
+                        frozen = {frozen},
+                        refreshing = {refreshing}
                     WHERE name = {name}
                 """).format(
-                    name=sql.Literal(user_data.get('name')),
-                    age=sql.Literal(user_data.get('age')),
-                    visit=sql.Literal(user_data.get('visit')),
-                    last_drink=sql.Literal(user_data.get('last_drink')),
-                    preferred_sweet=sql.Literal(user_data.get('preferred_sweet')),
-                    preferred_sour=sql.Literal(user_data.get('preferred_sour'))
+                    name=sql.Literal(user_data.name),
+                    age=sql.Literal(user_data.age),
+                    # visit=sql.Literal(user_data.visit),
+                    last_drink=sql.Literal(user_data.last_drink),
+                    occasion=sql.Literal(user_data.occasion),
+                    sweet=sql.Literal(user_data.sweet),
+                    sour=sql.Literal(user_data.sour),
+                    spicy=sql.Literal(user_data.spicy),
+                    # bitter=sql.Literal(user_data.bitter),
+                    fruity=sql.Literal(user_data.fruity),
+                    savory=sql.Literal(user_data.savory),
+                    hot=sql.Literal(user_data.hot),
+                    frozen=sql.Literal(user_data.frozen),
+                    refreshing=sql.Literal(user_data.refreshing)
                 )
-                
                 cursor.execute(update_query)
                 connection.commit()
                 print(f"User data updated: {user_data}")
@@ -117,18 +137,53 @@ def update_user_data(user_data):
                 print(f"[Error] ~ Updating user data: {e}")
 
 
+def get_all_cocktails():
+    """Fetches all cocktails from the database."""
+    with psycopg2.connect(**get_connection_params()) as connection:
+        with connection.cursor() as cursor:
+            try:
+                select_query = sql.SQL("""
+                    SELECT *
+                    FROM cocktail_data
+                """)
+                cursor.execute(select_query)
+                results = cursor.fetchall()
+                print("Here are all cocktails:")
+                for i in range(0, 10):
+                    print(results[i])
+            except Exception as e:
+                print(f"[Error] ~ getting all cocktails: {e}")
+
 if __name__ == "__main__":
     # Example usage:
     user_data = {
+        'id': None,
         'name': 'John',
         'age': 25,
-        'visit': 3,
+        # 'visit': 3,
         'last_drink': 'CocktailXYZ',
-        'preferred_sweet': 4,
-        'preferred_sour': 2
+        'occasion': 'birthday',
+        'sweet': True,
+        'sour': False,
+        'spicy': False,
+        # 'bitter': False,
+        'fruity': False,
+        'savory': False,
+        'hot': False,
+        'frozen': False,
+        'refreshing': False
     }
-    user_id_to_get = 2
+    user_instance = User(**user_data)
+    # insert_user_data(user_instance)
 
-    insert_user_data(user_data)
-    get_user_by_id(user_id_to_get)
+    print(get_user_by_name("John"))
+    user_instance.set_age(26)
+    user_instance.set_last_drink("CocktailABC")
+    user_instance.set_occasion("wedding")
+    user_instance.set_sweet(False)
+    user_instance.set_sour(True)
+
+    # update_user_data(user_instance)
+    # get_all_cocktails()
+    # load_data_from_csv()
 
