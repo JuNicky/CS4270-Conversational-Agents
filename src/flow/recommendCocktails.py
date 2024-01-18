@@ -22,8 +22,23 @@ def run(furhat: FurhatRemoteAPI, user_id, user):
     # For context, I made a custom function that calls their function.
     # The only thing that is changed, is that when the message is empty, succes should also be false.
     user_response = common.user_response(furhat)
-    
-    occasion = get_occasion(user_response.message)
+
+    occasion_check = query({
+        "inputs": """<|system|>
+    is there an occasion mentioned by the user?</s>
+    <|user|>""" + str(user_response.message) + """ </s>
+    <|assistant|>"""
+    }, model='recommend')
+    print(occasion_check)
+    print("=====================================")
+    print(occasion_check[0]['generated_text'])
+
+    # Sentiment analysis on response user later on
+    if query(occasion_check[0]['generated_text'], model='sentiment') == "NEGATIVE":
+        common.say(furhat, "That's nice! What is the occasion?")
+        user_ = common.user_response(furhat)
+    else:
+        occasion = get_occasion(user_response.message)
     
     common.say(furhat, f"Fun to see your {occasion}! Let me look for the best cocktail for you.", blocking=False)
     recommended_cocktail, ingredients, instructions,  = cosine_similarity.recommend_cocktail(user_response.message)
