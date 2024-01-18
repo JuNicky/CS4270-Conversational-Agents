@@ -9,11 +9,11 @@ def query(payload):
 	response = requests.post(API_URL, headers=headers, json=payload)
 	return response.json()
 
-input_string = "I am going to a party and I want something sweet"	
+input_string = "I would like a sweet cocktail"	
 
 gen_drink = query({
         "inputs": """<|system|>
-    You should let me know if the user mentions an occasion in the input</s>
+    Is there an occasion mentioned by the user?</s>
     <|user|>""" + str(input_string) + """ </s>
     <|assistant|>"""
     })
