@@ -6,7 +6,6 @@ from psycopg2 import sql
 from src.common.user import User
 from src.common.cocktail import Cocktail
 
-
 # Load environment variables from the .env file
 if not load_dotenv():
     print("Failed to load environment variables from .env file.")
@@ -27,25 +26,28 @@ def insert_user_data(user_data):
     with psycopg2.connect(**get_connection_params()) as connection:
         with connection.cursor() as cursor:
             try:
+                user_values = {
+                    'age': user_data.age,
+                    'last_drink': user_data.last_drink,
+                    'occasion': user_data.occasion,
+                    'sour': user_data.sour,
+                    'cream': user_data.cream,
+                    'bitter': user_data.bitter,
+                    'water': user_data.water,
+                    'herbal': user_data.herbal,
+                    'egg': user_data.egg,
+                    'salty': user_data.salty,
+                    'spicy': user_data.spicy
+                }
+
                 insert_query = sql.SQL("""
-                    INSERT INTO Users (name, age, last_drink, occasion, sweet, sour, spicy, fruity, savory, hot, frozen, refreshing)
-                    VALUES ({name}, {age}, {last_drink}, {occasion}, {sweet}, {sour}, {spicy}, {fruity}, {savory}, {hot}, {frozen}, {refreshing})
+                    INSERT INTO Users (name, {columns})
+                    VALUES ({name}, {values})
                     RETURNING id
                 """).format(
                     name=sql.Literal(user_data.name),
-                    age=sql.Literal(user_data.age),
-                    # visit=sql.Literal(user_data.visit),
-                    last_drink=sql.Literal(user_data.last_drink),
-                    occasion=sql.Literal(user_data.occasion),
-                    sweet=sql.Literal(user_data.sweet),
-                    sour=sql.Literal(user_data.sour),
-                    spicy=sql.Literal(user_data.spicy),
-                    # bitter=sql.Literal(user_data.bitter),
-                    fruity=sql.Literal(user_data.fruity),
-                    savory=sql.Literal(user_data.savory),
-                    hot=sql.Literal(user_data.hot),
-                    frozen=sql.Literal(user_data.frozen),
-                    refreshing=sql.Literal(user_data.refreshing)
+                    columns=sql.SQL(', ').join(map(sql.Identifier, user_values.keys())),
+                    values=sql.SQL(', ').join(map(sql.Literal, user_values.values()))
                 )
                 cursor.execute(insert_query)
                 user_id = cursor.fetchone()[0]
@@ -103,7 +105,6 @@ def get_all_users():
                 select_query = sql.SQL("""
                     SELECT * FROM Users
                 """)
-                
                 cursor.execute(select_query)
                 user_data = cursor.fetchall()
                 print(user_data)
@@ -119,35 +120,27 @@ def update_user_data(user_id, user_data):
     with psycopg2.connect(**get_connection_params()) as connection:
         with connection.cursor() as cursor:
             try:
-                print(user_id)
+                user_values = {
+                    'age': user_data.age,
+                    'last_drink': user_data.last_drink,
+                    'occasion': user_data.occasion,
+                    'sour': user_data.sour,
+                    'cream': user_data.cream,
+                    'bitter': user_data.bitter,
+                    'water': user_data.water,
+                    'herbal': user_data.herbal,
+                    'egg': user_data.egg,
+                    'salty': user_data.salty,
+                    'spicy': user_data.spicy
+                }
+                
                 update_query = sql.SQL("""
                     UPDATE Users
-                    SET age = {age},
-                        last_drink = {last_drink},
-                        occasion = {occasion},
-                        sweet = {sweet},
-                        sour = {sour},
-                        spicy = {spicy},
-                        fruity = {fruity},
-                        savory = {savory},
-                        hot = {hot},
-                        frozen = {frozen},
-                        refreshing = {refreshing}
+                    SET ({columns}) = ({values})
                     WHERE id = {user_id}
                 """).format(
-                    age=sql.Literal(user_data.age),
-                    # visit=sql.Literal(user_data.visit),
-                    last_drink=sql.Literal(user_data.last_drink),
-                    occasion=sql.Literal(user_data.occasion),
-                    sweet=sql.Literal(user_data.sweet),
-                    sour=sql.Literal(user_data.sour),
-                    spicy=sql.Literal(user_data.spicy),
-                    # bitter=sql.Literal(user_data.bitter),
-                    fruity=sql.Literal(user_data.fruity),
-                    savory=sql.Literal(user_data.savory),
-                    hot=sql.Literal(user_data.hot),
-                    frozen=sql.Literal(user_data.frozen),
-                    refreshing=sql.Literal(user_data.refreshing),
+                    columns=sql.SQL(', ').join(map(sql.Identifier, user_values.keys())),
+                    values=sql.SQL(', ').join(map(sql.Literal, user_values.values())),
                     user_id=sql.Literal(user_id)
                 )
                 cursor.execute(update_query)
@@ -200,16 +193,16 @@ if __name__ == "__main__":
         # 'visit': 3,
         'last_drink': 'CocktailXYZ',
         'occasion': 'birthday',
-        'sweet': True,
-        'sour': False,
-        'spicy': False,
-        # 'bitter': False,
-        'fruity': False,
-        'savory': False,
-        'hot': False,
-        'frozen': False,
-        'refreshing': False
+        'sour': True,
+        'cream': False,
+        'bitter': False,  
+        'water': False,
+        'herbal': False,
+        'egg': False,
+        'salty': False,
+        'spicy': False
     }
+
     user_instance = User(**user_data)
     # insert_user_data(user_instance)
     print(get_user_by_name("Nikki"))
