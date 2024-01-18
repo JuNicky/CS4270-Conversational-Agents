@@ -9,15 +9,15 @@ CREATE TABLE Users
     visit integer,
     last_drink text,
     occasion text,
-    sweet boolean,
     sour boolean,
-    spicy boolean,
-    -- bitter boolean, 
-    fruity boolean,
-    savory boolean,
-    hot boolean,
-    frozen boolean,
-    refreshing boolean
+    sweet boolean,
+    cream boolean,
+    bitter boolean,
+    water boolean,
+    herbal boolean,
+    egg boolean,
+    salty boolean,
+    spicy boolean
 );
 
 CREATE TABLE cocktail_data (
@@ -27,7 +27,16 @@ CREATE TABLE cocktail_data (
     glass text,
     ingredients text,
     ingredients_and_quantities text,
-    instructions text
+    instructions text,
+    sour boolean,
+    sweet boolean,
+    cream boolean,
+    bitter boolean,
+    water boolean,
+    herbal boolean,
+    egg boolean,
+    salty boolean,
+    spicy boolean
 );
 
-COPY cocktail_data FROM '/docker-entrypoint-initdb.d/data/cocktail_data_one.csv' CSV HEADER;
+COPY cocktail_data FROM '/docker-entrypoint-initdb.d/data/updated_cocktail_data.csv' CSV HEADER;
