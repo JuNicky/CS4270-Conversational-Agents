@@ -20,7 +20,7 @@ def run(furhat: FurhatRemoteAPI, user_data):
     # Sentiment analysis on response
     if sentiment_analysis.query(user_response.message) == "NEGATIVE":
         # Go to recommendCocktails
-        recommendCocktails.run(furhat, user_data.user_id, user_data)
+        recommendCocktails.run(furhat, user_data.id, user_data)
         return
     else:
         cocktail = database.get_drink_by_cocktail(last_drink)
