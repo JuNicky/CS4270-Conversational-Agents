@@ -6,7 +6,6 @@ CREATE TABLE Users
     id serial PRIMARY KEY,
     name text NOT NULL,
     age integer,
-    visit integer,
     last_drink text,
     occasion text,
     sour boolean,

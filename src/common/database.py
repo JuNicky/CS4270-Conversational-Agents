@@ -26,7 +26,9 @@ def insert_user_data(user_data):
     with psycopg2.connect(**get_connection_params()) as connection:
         with connection.cursor() as cursor:
             try:
+                print(user_data, " here")
                 user_values = {
+                    'name': user_data.name,
                     'age': user_data.age,
                     'last_drink': user_data.last_drink,
                     'occasion': user_data.occasion,
@@ -40,13 +42,11 @@ def insert_user_data(user_data):
                     'salty': user_data.salty,
                     'spicy': user_data.spicy
                 }
-
                 insert_query = sql.SQL("""
-                    INSERT INTO Users (name, {columns})
-                    VALUES ({name}, {values})
+                    INSERT INTO Users ({columns})
+                    VALUES ({values})
                     RETURNING id
                 """).format(
-                    name=sql.Literal(user_data.name),
                     columns=sql.SQL(', ').join(map(sql.Identifier, user_values.keys())),
                     values=sql.SQL(', ').join(map(sql.Literal, user_values.values()))
                 )
@@ -108,13 +108,9 @@ def get_all_users():
                 """)
                 cursor.execute(select_query)
                 user_data = cursor.fetchall()
-                print(user_data)
-                if user_data:
-                    return User(*user_data)
-                else:
-                    return None
+                return user_data
             except Exception as e:
-                print(f"[Error] ~ Fetching user data: {e}")                
+                print(f"[Error] ~ Fetching all user data: {e}")                
 
 def update_user_data(user_id, user_data):
     """Updates user data in the database."""
@@ -183,6 +179,45 @@ def get_drink_by_cocktail(cocktail):
                 return Cocktail(*results)
             except Exception as e:
                 print(f"[Error] ~ getting all ingredients: {e}")
+
+def get_drink_based_on_user(user_data): 
+    with psycopg2.connect(**get_connection_params()) as connection:
+        with connection.cursor() as cursor:
+            try:
+                select_query = sql.SQL("""
+                    SELECT *
+                    FROM cocktail_data
+                    WHERE sour = {sour}
+                    AND sweet = {sweet}
+                    AND cream = {cream}
+                    AND bitter = {bitter}
+                    AND water = {water}
+                    AND herbal = {herbal}
+                    AND egg = {egg}
+                    AND salty = {salty}
+                    AND spicy = {spicy}
+                """).format(
+                    sour=sql.Literal(user_data.sour),
+                    sweet=sql.Literal(user_data.sweet),
+                    cream=sql.Literal(user_data.cream),
+                    bitter=sql.Literal(user_data.bitter),
+                    water=sql.Literal(user_data.water),
+                    herbal=sql.Literal(user_data.herbal),
+                    egg=sql.Literal(user_data.egg),
+                    salty=sql.Literal(user_data.salty),
+                    spicy=sql.Literal(user_data.spicy)
+                )
+                cursor.execute(select_query)
+
+                results = cursor.fetchall()
+                cocktails = []
+                for result in results:
+                    cocktail = Cocktail(*result)
+                    cocktails.append(cocktail)
+
+                return cocktails
+            except Exception as e:
+                print(f"[Error] ~ getting all similar cocktails: {e}")
     
 
 if __name__ == "__main__":
@@ -196,7 +231,7 @@ if __name__ == "__main__":
         'occasion': 'birthday',
         'sour': True,
         'sweet': False,
-        'cream': False,
+        'cream': True,
         'bitter': False,  
         'water': False,
         'herbal': False,
@@ -205,9 +240,10 @@ if __name__ == "__main__":
         'spicy': False
     }
 
+
     user_instance = User(**user_data)
-    # insert_user_data(user_instance)
-    print(get_user_by_name("Nikki"))
+    insert_user_data(user_instance)
+    print(get_drink_based_on_user(user_instance))
     # user_instance.set_age(26)
     # user_instance.set_last_drink("CocktailABC")
     # user_instance.set_occasion("wedding")

@@ -54,4 +54,4 @@ class User:
         self.spicy = spicy
     
     def __str__(self):
-        return f"User(name={self.name}, age={self.age}, visit={self.visit}, last_drink={self.last_drink}, occasion={self.occasion}, sweet={self.sweet}, sour={self.sour}, spicy={self.spicy}, bitter={self.bitter}, fruity={self.fruity}, savory={self.savory}, hot={self.hot}, frozen={self.frozen}, refreshing={self.refreshing})"
+        return f"User(id={self.id}, name={self.name}, age={self.age}, visit={self.visit}, last_drink={self.last_drink}, occasion={self.occasion}, sour={self.sour}, sweet={self.sweet}, cream={self.cream}, bitter={self.bitter}, water={self.water}, herbal={self.herbal}, egg={self.egg}, salty={self.salty}, spicy={self.spicy})"
