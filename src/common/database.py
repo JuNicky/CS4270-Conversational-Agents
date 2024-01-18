@@ -31,6 +31,7 @@ def insert_user_data(user_data):
                     'last_drink': user_data.last_drink,
                     'occasion': user_data.occasion,
                     'sour': user_data.sour,
+                    'sweet': user_data.sweet,
                     'cream': user_data.cream,
                     'bitter': user_data.bitter,
                     'water': user_data.water,
@@ -125,6 +126,7 @@ def update_user_data(user_id, user_data):
                     'last_drink': user_data.last_drink,
                     'occasion': user_data.occasion,
                     'sour': user_data.sour,
+                    'sweet': user_data.sweet,
                     'cream': user_data.cream,
                     'bitter': user_data.bitter,
                     'water': user_data.water,
@@ -133,7 +135,7 @@ def update_user_data(user_id, user_data):
                     'salty': user_data.salty,
                     'spicy': user_data.spicy
                 }
-                
+
                 update_query = sql.SQL("""
                     UPDATE Users
                     SET ({columns}) = ({values})
@@ -148,7 +150,6 @@ def update_user_data(user_id, user_data):
                 print(f"User data updated: {user_data}")
             except Exception as e:
                 print(f"[Error] ~ Updating user data: {e}")
-
 
 def get_all_cocktails():
     """Fetches all cocktails from the database."""
@@ -181,8 +182,7 @@ def get_drink_by_cocktail(cocktail):
                 results = cursor.fetchone()
                 return Cocktail(*results)
             except Exception as e:
-                print(f"[Error] ~ getting all ingredients: {e}")
-
+                print(f"[Error] ~ getting all ingredients: {e}")    
 
 if __name__ == "__main__":
     # Example usage:
@@ -194,6 +194,7 @@ if __name__ == "__main__":
         'last_drink': 'CocktailXYZ',
         'occasion': 'birthday',
         'sour': True,
+        'sweet': False,
         'cream': False,
         'bitter': False,  
         'water': False,
