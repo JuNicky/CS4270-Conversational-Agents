@@ -36,7 +36,8 @@ def run(furhat: FurhatRemoteAPI, user_id, user):
     # Sentiment analysis on response user later on
     if query(occasion_check[0]['generated_text'], model='sentiment') == "NEGATIVE":
         common.say(furhat, "That's nice! What is the occasion?")
-        user_ = common.user_response(furhat)
+        occasion_text = common.user_response(furhat)
+        occasion = get_occasion(occasion_text.message)
     else:
         occasion = get_occasion(user_response.message)
     

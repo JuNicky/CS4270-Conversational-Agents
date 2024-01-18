@@ -2,8 +2,8 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.linear_model import LogisticRegression
-# from src.common.api_calls import query
-from api_calls import query
+from src.common.api_calls import query
+# from api_calls import query
 
 # import gpt, qa
 # Load the dataset
