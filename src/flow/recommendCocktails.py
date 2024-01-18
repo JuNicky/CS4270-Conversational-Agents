@@ -16,34 +16,21 @@ def run(furhat: FurhatRemoteAPI, user_id, user):
         # Ask what the user wants to change
         # Recommend next cocktail
     
-    common.say(furhat, "What kind of cocktail would you like?")
+    common.say(furhat, "What kind of occasion is the cocktail for?")
 
     # Wait for the user's response
     # For context, I made a custom function that calls their function.
     # The only thing that is changed, is that when the message is empty, succes should also be false.
     user_response = common.user_response(furhat)
 
-    occasion_check = query({
-        "inputs": """<|system|>
-    is there an occasion mentioned by the user?</s>
-    <|user|>""" + str(user_response.message) + """ </s>
-    <|assistant|>"""
-    }, model='recommend')
-    print(occasion_check)
-    print("=====================================")
-    print(occasion_check[0]['generated_text'])
-
-    # Sentiment analysis on response user later on
-    if query(occasion_check[0]['generated_text'], model='sentiment') == "NEGATIVE":
-        common.say(furhat, "That's nice! What is the occasion?")
-        occasion_text = common.user_response(furhat)
-        occasion = get_occasion(occasion_text.message)
-    else:
-        occasion = get_occasion(user_response.message)
+    occasion = get_occasion(user_response.message)
     
-    common.say(furhat, f"Fun to see your {occasion}! Let me look for the best cocktail for you.", blocking=False)
-    recommended_cocktail, ingredients, instructions,  = cosine_similarity.recommend_cocktail(user_response.message)
+    common.say(furhat, f"Fun to see your {occasion}! What kind of tastes do you prefer?")
+    user_response = common.user_response(furhat)
 
+    common.say(furhat, f"Nice! Let me look for the perfect cocktail for your {occasion}?", blocking=False)
+    recommended_cocktail, ingredients, instructions = cosine_similarity.recommend_cocktail(f"{user_response.message} for {occasion}")
+    
     common.say(furhat, f"For the {occasion} I recommend a {recommended_cocktail} cocktail. Would you like to make it?")
  
     # Wait for the user's response
