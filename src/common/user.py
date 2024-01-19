@@ -1,10 +1,9 @@
 class User:
-    def __init__(self, id, name, age=None, visit=None, last_drink=None, occasion=None,
+    def __init__(self, id, name, age=None, last_drink=None, occasion=None,
                  sour=False, sweet=False, cream=False, bitter=False, water=False, herbal=False, egg=False, salty=False, spicy=False):
         self.id = id
         self.name = name
         self.age = age
-        self.visit = visit
         self.last_drink = last_drink
         self.occasion = occasion
         self.sour = sour
@@ -19,9 +18,6 @@ class User:
 
     def set_age(self, age):
         self.age = age
-
-    def set_visit(self, visit):
-        self.visit = visit
 
     def set_last_drink(self, last_drink):
         self.last_drink = last_drink
@@ -54,4 +50,4 @@ class User:
         self.spicy = spicy
     
     def __str__(self):
-        return f"User(id={self.id}, name={self.name}, age={self.age}, visit={self.visit}, last_drink={self.last_drink}, occasion={self.occasion}, sour={self.sour}, sweet={self.sweet}, cream={self.cream}, bitter={self.bitter}, water={self.water}, herbal={self.herbal}, egg={self.egg}, salty={self.salty}, spicy={self.spicy})"
+        return f"User(id={self.id}, name={self.name}, age={self.age}, last_drink={self.last_drink}, occasion={self.occasion}, sour={self.sour}, sweet={self.sweet}, cream={self.cream}, bitter={self.bitter}, water={self.water}, herbal={self.herbal}, egg={self.egg}, salty={self.salty}, spicy={self.spicy})"

@@ -102,7 +102,8 @@ def recommend_cocktail(input_string):
     return recommended_cocktail, ingredients_and_quantities, instructions
 
 
-# Example usage
-input_string = "I would like a strong and sweet drink fo my girls party"
-recommended_cocktail = recommend_cocktail(input_string)
-print("Recommended cocktail:", recommended_cocktail)
+if __name__ == "__main__":
+    # Example usage
+    input_string = "I would like a strong and sweet drink fo my girls party"
+    recommended_cocktail = recommend_cocktail(input_string)
+    print("Recommended cocktail:", recommended_cocktail)

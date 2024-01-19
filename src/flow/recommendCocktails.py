@@ -1,9 +1,8 @@
-import time
 from furhat_remote_api import FurhatRemoteAPI
 from src.common import common, database
 from src.common.api_calls import query, get_occasion
 from src.experiments import cosine_similarity, sentiment_analysis
-
+from src.flow import giveRecipe
 
 # Recommends cocktails to the user based on their preferences
 def run(furhat: FurhatRemoteAPI, user_id, user):
@@ -48,7 +47,6 @@ def run(furhat: FurhatRemoteAPI, user_id, user):
         common.say(furhat, f"Good to see the {occasion}! Let me look for the best cocktail for you.", blocking=False)
                 
         recommended_cocktail, ingredients, instructions = cosine_similarity.recommend_cocktail(user_response.message)
-        
 
         common.say(furhat, "I recommend a " + recommended_cocktail + " cocktail. Would you like to make it?")
 
@@ -58,7 +56,5 @@ def run(furhat: FurhatRemoteAPI, user_id, user):
     user.last_drink = recommended_cocktail
     user.occasion = occasion
     database.update_user_data(user_id, user)
-
-    common.say(furhat, "Great! Here are the ingredients and instructions.")
-    common.say(furhat, ingredients)
-    common.say(furhat, instructions)
+    
+    giveRecipe.run(furhat, recommended_cocktail, ingredients, instructions)

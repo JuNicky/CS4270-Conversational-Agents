@@ -147,6 +147,7 @@ def update_user_data(user_id, user_data):
             except Exception as e:
                 print(f"[Error] ~ Updating user data: {e}")
 
+
 def get_all_cocktails():
     """Fetches all cocktails from the database."""
     with psycopg2.connect(**get_connection_params()) as connection:
@@ -164,6 +165,7 @@ def get_all_cocktails():
             except Exception as e:
                 print(f"[Error] ~ getting all cocktails: {e}")
 
+
 def get_drink_by_cocktail(cocktail):
     """Fetches all ingredients from a cocktail from the database."""
     with psycopg2.connect(**get_connection_params()) as connection:
@@ -180,7 +182,8 @@ def get_drink_by_cocktail(cocktail):
             except Exception as e:
                 print(f"[Error] ~ getting all ingredients: {e}")
 
-def get_drink_based_on_user(user_data): 
+
+def get_drinks_based_on_user(user_data): 
     with psycopg2.connect(**get_connection_params()) as connection:
         with connection.cursor() as cursor:
             try:
@@ -219,6 +222,46 @@ def get_drink_based_on_user(user_data):
             except Exception as e:
                 print(f"[Error] ~ getting all similar cocktails: {e}")
     
+
+def change_flavour_profile(user_id, flavor, value):
+    """Updates user data in the database."""
+    with psycopg2.connect(**get_connection_params()) as connection:
+        with connection.cursor() as cursor:
+            try:
+                print(user_id)
+                update_query = sql.SQL("""
+                    UPDATE Users
+                    SET {flavour} = {value}
+                    WHERE id = {user_id}
+                """).format(
+                    flavour=sql.Literal(flavor),
+                    value=sql.Literal(value),
+                    user_id=sql.Literal(user_id)
+                )
+                cursor.execute(update_query)
+                connection.commit()
+                print(f"User data updated: {flavor} {value}")
+            except Exception as e:
+                print(f"[Error] ~ Updating user data: {e}")
+
+
+def get_random_cocktail():
+    """Fetches a random cocktail from the database."""
+    with psycopg2.connect(**get_connection_params()) as connection:
+        with connection.cursor() as cursor:
+            try:
+                select_query = sql.SQL("""
+                    SELECT *
+                    FROM cocktail_data
+                    ORDER BY RANDOM()
+                    LIMIT 1
+                """)
+                cursor.execute(select_query)
+                results = cursor.fetchone()
+                return Cocktail(*results)
+            except Exception as e:
+                print(f"[Error] ~ getting random cocktail: {e}")
+
 
 if __name__ == "__main__":
     # Example usage:

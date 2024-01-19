@@ -27,15 +27,16 @@ def get_occasion(input_string):
     return list(qa_occasion.values())[-1]
 
 
-input_string = "I would like a sweet cocktail"	
+if "__main__" == __name__:
+    input_string = "I would like a sweet cocktail"	
 
-gen_drink = query({
-        "inputs": """<|system|>
-    Is there an occasion mentioned by the user?</s>
-    <|user|>""" + str(input_string) + """ </s>
-    <|assistant|>"""
-    }, model='recommend')
+    gen_drink = query({
+            "inputs": """<|system|>
+        Is there an occasion mentioned by the user?</s>
+        <|user|>""" + str(input_string) + """ </s>
+        <|assistant|>"""
+        }, model='recommend')
 
-print(gen_drink[0]['generated_text'])
+    print(gen_drink[0]['generated_text'])
 
-print(query(list(gen_drink[0].values())[0], model='sentiment'))
+    print(query(list(gen_drink[0].values())[0], model='sentiment'))
