@@ -12,9 +12,7 @@ def run(furhat: FurhatRemoteAPI, user_data):
     # Else
         # Go to recommend cocktails
         
-    print("User data: ", user_data)
     last_drink = user_data.last_drink
-    print("last drink: ", last_drink)
     common.say(furhat, f"Welcome back {user_data.name}! I'm glad to see you again.")
     common.say(furhat, f"I remember that I gave you {last_drink} last time. How did you like your drink?")
     
@@ -99,6 +97,7 @@ def run(furhat: FurhatRemoteAPI, user_data):
         else:
             common.say(furhat, "Alright, let's find you a new cocktail.")
             recommendCocktails.run(furhat, user_data.id, user_data)
+            return
 
     giveRecipe.run(furhat, cocktail, user_data)
     return
