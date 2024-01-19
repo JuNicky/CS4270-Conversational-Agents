@@ -70,11 +70,11 @@ def get_user_by_id(user_id):
                 
                 cursor.execute(select_query, (user_id,))
                 user_data = cursor.fetchone()
-
                 if user_data:
-                    print(f"User found: {user_data}")
+                    return User(*user_data)
                 else:
                     print(f"User with ID {user_id} not found.")
+                    return None
             except Exception as e:
                 print(f"[Error] ~ Fetching user data: {e}")
 
@@ -183,7 +183,7 @@ def get_drink_by_cocktail(cocktail):
                 print(f"[Error] ~ getting all ingredients: {e}")
 
 
-def get_drinks_based_on_user(user_data): 
+def get_drinks_based_on_user(user_data, max_length=5): 
     with psycopg2.connect(**get_connection_params()) as connection:
         with connection.cursor() as cursor:
             try:
@@ -218,7 +218,7 @@ def get_drinks_based_on_user(user_data):
                     cocktail = Cocktail(*result)
                     cocktails.append(cocktail)
 
-                return cocktails
+                return cocktails[:max_length]
             except Exception as e:
                 print(f"[Error] ~ getting all similar cocktails: {e}")
     
@@ -229,12 +229,13 @@ def change_flavour_profile(user_id, flavor, value):
         with connection.cursor() as cursor:
             try:
                 print(user_id)
+                print(value)
                 update_query = sql.SQL("""
                     UPDATE Users
                     SET {flavour} = {value}
                     WHERE id = {user_id}
                 """).format(
-                    flavour=sql.Literal(flavor),
+                    flavour=sql.Identifier(flavor),
                     value=sql.Literal(value),
                     user_id=sql.Literal(user_id)
                 )
@@ -264,29 +265,30 @@ def get_random_cocktail():
 
 
 if __name__ == "__main__":
-    # Example usage:
-    user_data = {
-        'id': None,
-        'name': 'John',
-        'age': 25,
-        # 'visit': 3,
-        'last_drink': 'CocktailXYZ',
-        'occasion': 'birthday',
-        'sour': True,
-        'sweet': False,
-        'cream': True,
-        'bitter': False,  
-        'water': False,
-        'herbal': False,
-        'egg': False,
-        'salty': False,
-        'spicy': False
-    }
+    change_flavour_profile(1, "sour", True)
+    # # Example usage:
+    # user_data = {
+    #     'id': None,
+    #     'name': 'John',
+    #     'age': 25,
+    #     # 'visit': 3,
+    #     'last_drink': 'CocktailXYZ',
+    #     'occasion': 'birthday',
+    #     'sour': True,
+    #     'sweet': False,
+    #     'cream': True,
+    #     'bitter': False,  
+    #     'water': False,
+    #     'herbal': False,
+    #     'egg': False,
+    #     'salty': False,
+    #     'spicy': False
+    # }
 
 
-    user_instance = User(**user_data)
-    insert_user_data(user_instance)
-    print(get_drink_based_on_user(user_instance))
+    # user_instance = User(**user_data)
+    # insert_user_data(user_instance)
+    # print(get_drink_based_on_user(user_instance))
     # user_instance.set_age(26)
     # user_instance.set_last_drink("CocktailABC")
     # user_instance.set_occasion("wedding")

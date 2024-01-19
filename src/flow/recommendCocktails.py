@@ -28,15 +28,13 @@ def run(furhat: FurhatRemoteAPI, user_id, user):
     user_response = common.user_response(furhat)
 
     common.say(furhat, f"Nice! Let me look for the perfect cocktail for your {occasion}?", blocking=False)
-    recommended_cocktail, ingredients, instructions = cosine_similarity.recommend_cocktail(f"{user_response.message} for {occasion}")
+    recommended_cocktail = cosine_similarity.recommend_cocktail(f"{user_response.message} for {occasion}")
     
     common.say(furhat, f"For the {occasion} I recommend a {recommended_cocktail} cocktail. Would you like to make it?")
  
     # Wait for the user's response
     user_response = common.user_response(furhat)
     
-    
-
     print(query(user_response.message, model='sentiment'))
     # Sentiment analysis on response user later on
     while query(user_response.message, model='sentiment') == "NEGATIVE":
@@ -46,7 +44,7 @@ def run(furhat: FurhatRemoteAPI, user_id, user):
         occasion = get_occasion(user_response.message)
         common.say(furhat, f"Good to see the {occasion}! Let me look for the best cocktail for you.", blocking=False)
                 
-        recommended_cocktail, ingredients, instructions = cosine_similarity.recommend_cocktail(user_response.message)
+        recommended_cocktail = cosine_similarity.recommend_cocktail(user_response.message)
 
         common.say(furhat, "I recommend a " + recommended_cocktail + " cocktail. Would you like to make it?")
 
@@ -55,6 +53,4 @@ def run(furhat: FurhatRemoteAPI, user_id, user):
     # Update the user's model with the new cocktail
     user.last_drink = recommended_cocktail
     user.occasion = occasion
-    database.update_user_data(user_id, user)
-    
-    giveRecipe.run(furhat, recommended_cocktail, ingredients, instructions)
+    giveRecipe.run(furhat, recommended_cocktail, user)

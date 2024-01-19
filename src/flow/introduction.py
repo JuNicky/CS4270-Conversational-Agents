@@ -68,7 +68,7 @@ def run(furhat: FurhatRemoteAPI):
     
     # Greetings from furhat
     common.say(furhat, "Hi there! I'm your conversational agent for recommending cocktails!")
-    common.say(furhat, "Can you please let me know me your name?")
+    common.say(furhat, "Can you please tell me your name?")
     
     response = common.listen(furhat)
     

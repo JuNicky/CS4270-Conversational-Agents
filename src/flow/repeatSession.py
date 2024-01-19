@@ -30,18 +30,20 @@ def run(furhat: FurhatRemoteAPI, user_data):
         flavors = ['sour','sweet','cream','bitter','water','herbal','egg','salty','spicy']
         for i in flavors:
             if i in user_response.message:
+                print(sentiment)
                 database.change_flavour_profile(user_data.id, i, sentiment == "POSITIVE")
-                user = database.get_user_by_id(user_data.id)
-                drinks = database.get_drinks_based_on_user(user)
+                updated_user = database.get_user_by_id(user_data.id)
+                drinks = database.get_drinks_based_on_user(updated_user)
                 if len(drinks) == 0:
                     break
+                common.say(furhat, f"Alright, let me look for new recommendations.")
                 if len(drinks) == 1:
                     drink = drinks[0]
                     common.say(furhat, f"I found one recommendation for you, the {drink}. Would you like to make it?")
                     user_response = common.user_response(furhat)
                     sentiment = sentiment_analysis.query(user_response.message)
                     if sentiment == "POSITIVE":
-                        giveRecipe.run(furhat, drink.drink, drink.ingredients_and_quantities, drink.instructions)
+                        giveRecipe.run(furhat, drink, user_data)
                     break
                 if len(drinks) > 1:
                     drink = drinks.pop(0)
@@ -49,23 +51,23 @@ def run(furhat: FurhatRemoteAPI, user_data):
                     user_response = common.user_response(furhat)
                     sentiment = sentiment_analysis.query(user_response.message)
                     if sentiment == "POSITIVE":
-                        giveRecipe.run(furhat, drink.drink, drink.ingredients_and_quantities, drink.instructions)
+                        giveRecipe.run(furhat, drink, user_data)
                         return
                     while sentiment == "NEGATIVE" and len(drinks) > 0:
-                        drinks.pop(0)
+                        drink = drinks.pop(0)
                         phrases = [
-                            f"Alright, how about I suggest the {drink.name}? Are you interested in making it?",
-                            f"Sure, let's go with the {drink.name}. Does making this one sound good to you?",
-                            f"Okay, I propose the {drink.name} for you. Would you like to try preparing it?"
+                            f"Alright, how about I suggest the {drink.drink}? Are you interested in making it?",
+                            f"Let's go with the {drink.drink}. Does making this one sound good to you?",
+                            f"Okay, I propose the {drink.drink} for you. Would you like to try preparing it?"
                         ]
                         selected_phrase = random.choice(phrases)
                         common.say(furhat, selected_phrase)
                         user_response = common.user_response(furhat)
                         sentiment = sentiment_analysis.query(user_response.message)
-                        drink = drinks.pop(0)
                         if sentiment == "POSITIVE":
-                            giveRecipe.run(furhat, drinks[0].drink, drinks[0].ingredients_and_quantities, drinks[0].instructions)
+                            giveRecipe.run(furhat, drink, user_data)
                             return
+                    break
                 
         # Cannot find flavour or no drinks found
         common.say(furhat, "I couldn't find you a cocktail based on your preferences.")
@@ -98,6 +100,5 @@ def run(furhat: FurhatRemoteAPI, user_data):
             common.say(furhat, "Alright, let's find you a new cocktail.")
             recommendCocktails.run(furhat, user_data.id, user_data)
 
-    print("Recommended cocktail: ", cocktail)
-    giveRecipe.run(furhat, cocktail.drink, cocktail.ingredients_and_quantities, cocktail.instructions)
+    giveRecipe.run(furhat, cocktail, user_data)
     return

@@ -3,6 +3,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.linear_model import LogisticRegression
 from src.common.api_calls import query
+from src.common import database
 # from api_calls import query
 
 # import gpt, qa
@@ -93,13 +94,13 @@ def recommend_cocktail(input_string):
 
     # Return the recommended cocktail
     recommended_cocktail = data.loc[most_similar_index, 'drink']
-    # assign ingredients_and_quantities to a variable
-    ingredients_and_quantities = data.loc[most_similar_index, 'ingredients_and_quantities']
-    # assign instructions to a variable
-    instructions = data.loc[most_similar_index, 'instructions']
+    # # assign ingredients_and_quantities to a variable
+    # ingredients_and_quantities = data.loc[most_similar_index, 'ingredients_and_quantities']
+    # # assign instructions to a variable
+    # instructions = data.loc[most_similar_index, 'instructions']
 
     print("Recommended cocktail:", recommended_cocktail)
-    return recommended_cocktail, ingredients_and_quantities, instructions
+    return database.get_drink_by_cocktail(recommended_cocktail)
 
 
 if __name__ == "__main__":
