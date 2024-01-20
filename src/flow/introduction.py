@@ -99,6 +99,7 @@ def run(furhat: FurhatRemoteAPI):
     # Create user
     new_user = User(None, name, age)
     user_id = database.insert_user_data(new_user)
+    new_user.id = user_id
 
     # Go to buildModel
     buildModel.run(furhat, user_id, new_user)
