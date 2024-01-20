@@ -3,10 +3,9 @@ import logging
 import psycopg2
 from dotenv import load_dotenv
 from psycopg2 import sql
-# from src.common.user import User
-# from src.common.cocktail import Cocktail
-from user import User
-from cocktail import Cocktail
+from src.common.user import User
+from src.common.cocktail import Cocktail
+
 
 # Load environment variables from the .env file
 if not load_dotenv():
