@@ -6,6 +6,9 @@ import imutils
 import cv2
 from keras.models import load_model
 import numpy as np
+import time
+from src.experiments import sentiment_analysis
+
 
 detection_model_path = 'emotionRecognition/haarcascade_files/haarcascade_frontalface_default.xml'
 emotion_model_path = 'emotionRecognition/models/_mini_XCEPTION.102-0.66.hdf5'
@@ -77,9 +80,23 @@ def run(furhat: FurhatRemoteAPI, cocktail, user):
         "neutral": "I see from your face that you feel a bit neutral. Don't worry, this cocktail will pleasantly surprise you."
     }
 
+    # if an emotion is not detected, the default phrase is used
     emotion_phrase = emotion_responses.get(emotion, "I cannot see from your face how you're feeling, but I hope you'll enjoy this cocktail!")
     
     common.say(furhat, emotion_phrase)
     common.say(furhat, selected_phrase)
     common.say(furhat, cocktail.ingredients_and_quantities)
     common.say(furhat, cocktail.instructions)
+    
+    time.sleep(1)
+    
+    common.say(furhat, "Would you like me to repeat the instructions?")
+    user_response = common.listen(furhat)
+    while sentiment_analysis.query(user_response.message) == "POSITIVE":
+        common.say(furhat, "Here are the instructions again.")
+        common.say(furhat, cocktail.ingredients_and_quantities)
+        common.say(furhat, cocktail.instructions)
+        common.say(furhat, "Do you want me to repeat the instructions again?")
+        user_response = common.listen(furhat)
+        
+    common.say(furhat, "Okay, I hope you'll enjoy your cocktail!")
