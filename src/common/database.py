@@ -3,8 +3,10 @@ import logging
 import psycopg2
 from dotenv import load_dotenv
 from psycopg2 import sql
-from src.common.user import User
-from src.common.cocktail import Cocktail
+# from src.common.user import User
+# from src.common.cocktail import Cocktail
+from user import User
+from cocktail import Cocktail
 
 # Load environment variables from the .env file
 if not load_dotenv():
@@ -81,6 +83,9 @@ def get_user_by_id(user_id):
 
 def get_user_by_name(name):
     """Fetches user data by name from the database."""
+    if os.getenv('CONTROL_GROUP').lower() == 'true':
+        print("CONTROL GROUP")
+        return None  
     with psycopg2.connect(**get_connection_params()) as connection:
         with connection.cursor() as cursor:
             try:
@@ -228,8 +233,6 @@ def change_flavour_profile(user_id, flavor, value):
     with psycopg2.connect(**get_connection_params()) as connection:
         with connection.cursor() as cursor:
             try:
-                print(user_id)
-                print(value)
                 update_query = sql.SQL("""
                     UPDATE Users
                     SET {flavour} = {value}
@@ -265,7 +268,8 @@ def get_random_cocktail():
 
 
 if __name__ == "__main__":
-    change_flavour_profile(1, "sour", True)
+    get_user_by_name('Nicky')
+    # change_flavour_profile(1, "sour", True)
     # # Example usage:
     # user_data = {
     #     'id': None,
