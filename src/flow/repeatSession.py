@@ -14,7 +14,12 @@ def run(furhat: FurhatRemoteAPI, user_data):
         
     last_drink = user_data.last_drink
     common.say(furhat, f"Welcome back {user_data.name}! I'm glad to see you again.")
-    common.say(furhat, f"I remember that I gave you {last_drink} last time. How did you like your drink?")
+    common.say(furhat, f"I remeber that you had a {user_data.occasion} last time. How was it?")
+    response  = common.user_response(furhat)
+    if sentiment_analysis.query(response.message) == "POSITIVE":
+        common.say(furhat, f"Good to hear you had a blast. I remember that I gave you {last_drink} last time. How did you like your drink?")
+    else:
+        common.say(furhat, f"Sorry to hear that, I hope next time will be more fun. Was the {last_drink} still to your liking?")    
     
     # Wait for the user's response
     user_response = common.user_response(furhat)
