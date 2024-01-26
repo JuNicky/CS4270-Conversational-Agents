@@ -40,7 +40,7 @@ def extract_ingredients(text):
     return formatted_ingredients
 
 # Function to recommend a cocktail based on input string
-def recommend_cocktail(input_string):
+def recommend_cocktail(input_string, second_try=False):
 
     # stukje gptflow
     gen_drink = query({
@@ -51,7 +51,7 @@ def recommend_cocktail(input_string):
     }, model='recommend')
     # print(gen_drink)
     # print("=====================================")
-    # print(gen_drink[0]['generated_text'])
+    print(gen_drink[0]['generated_text'])
 
     # Question answering model
     qa_recommend = query({
@@ -69,7 +69,7 @@ def recommend_cocktail(input_string):
     # })
 
 
-    gen_ingredients = extract_ingredients(list(gen_drink[0].values())[0])
+    gen_ingredients = extract_ingredients(gen_drink[0]['generated_text'])
 
 
     # Preprocess the input string
@@ -90,7 +90,11 @@ def recommend_cocktail(input_string):
     similarity_scores = cosine_similarity(input_vector, filtered_X)
     print(similarity_scores)
     # Find the index of the most similar cocktail in the filtered dataset
-    most_similar_index = similarity_scores.argmax()
+    if second_try:
+        most_similar_index = similarity_scores[0][1:].argmax()
+        
+    else:
+        most_similar_index = similarity_scores.argmax()
 
     # Return the recommended cocktail
     recommended_cocktail = data.loc[most_similar_index, 'drink']
